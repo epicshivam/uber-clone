@@ -1,4 +1,4 @@
-# User Registration & Login Endpoint Documentation
+# API Endpoint Documentation
 
 ## User Registration
 
@@ -11,8 +11,6 @@
 Registers a new user in the system. This endpoint expects user details in the request body and returns a JWT token and the created user object upon successful registration.
 
 ### Request Body
-
-Send a JSON object with the following structure:
 
 ```json
 {
@@ -95,8 +93,6 @@ curl -X POST http://localhost:3000/user/register \
 Authenticates an existing user. This endpoint expects the user's email and password in the request body and returns a JWT token and user object upon successful login.
 
 ### Request Body
-
-Send a JSON object with the following structure:
 
 ```json
 {
@@ -263,4 +259,120 @@ Logs out the authenticated user by blacklisting the JWT token and clearing the a
 ```sh
 curl -X GET http://localhost:3000/user/logout \
   -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+---
+
+# Captain Registration Endpoint Documentation
+
+## Captain Registration
+
+### Endpoint
+
+`POST /captain/register`
+
+### Description
+
+Registers a new captain (driver) in the system. This endpoint expects captain and vehicle details in the request body and returns a JWT token and the created captain object upon successful registration.
+
+### Request Body
+
+```json
+{
+  "fullName": {
+    "firstName": "Jane",
+    "lastName": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### Field Requirements
+
+- `fullName.firstName` (string, required): Minimum 3 characters.
+- `fullName.lastName` (string, required): Minimum 3 characters.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 3 characters.
+- `vehicle.color` (string, required): Minimum 3 characters.
+- `vehicle.plate` (string, required): Minimum 3 characters.
+- `vehicle.capacity` (integer, required): Must be a number greater than 0.
+- `vehicle.vehicleType` (string, required): Must be one of `car`, `motorcycle`, or `bicycle`.
+
+### Responses
+
+#### Success
+
+- **Status Code:** `201 Created`
+- **Body**
+  ```json
+  {
+    "token": "<JWT_TOKEN>",
+    "captain": {
+      "_id": "...",
+      "fullName": {
+        "firstName": "Jane",
+        "lastName": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+      // other validation errors
+    ]
+  }
+  ```
+
+#### Already Exists Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "message": "Captain already exist"
+  }
+  ```
+
+### Example Request
+
+```sh
+curl -X POST http://localhost:3000/captain/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": { "firstName": "Jane", "lastName": "Smith" },
+    "email": "jane.smith@example.com",
+    "password": "yourpassword",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }'
 ```
