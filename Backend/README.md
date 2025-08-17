@@ -263,7 +263,7 @@ curl -X GET http://localhost:3000/user/logout \
 
 ---
 
-# Captain Registration Endpoint Documentation
+# Captain Endpoint Documentation
 
 ## Captain Registration
 
@@ -375,4 +375,199 @@ curl -X POST http://localhost:3000/captain/register \
       "vehicleType": "car"
     }
   }'
+```
+
+---
+
+## Captain Login
+
+### Endpoint
+
+`POST /captain/login`
+
+### Description
+
+Authenticates an existing captain. This endpoint expects the captain's email and password in the request body and returns a JWT token and captain object upon successful login.
+
+### Request Body
+
+```json
+{
+  "email": "jane.smith@example.com",
+  "password": "yourpassword"
+}
+```
+
+#### Field Requirements
+
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 3 characters.
+
+### Responses
+
+#### Success
+
+- **Status Code:** `200 OK`
+- **Body**
+  ```json
+  {
+    "token": "<JWT_TOKEN>",
+    "captain": {
+      "_id": "...",
+      "fullName": {
+        "firstName": "Jane",
+        "lastName": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+      // other validation errors
+    ]
+  }
+  ```
+
+#### Authentication Error
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+### Example Request
+
+```sh
+curl -X POST http://localhost:3000/captain/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane.smith@example.com",
+    "password": "yourpassword"
+  }'
+```
+
+---
+
+## Captain Profile
+
+### Endpoint
+
+`GET /captain/profile`
+
+### Description
+
+Returns the authenticated captain's profile information. Requires a valid JWT token (sent via cookie or Authorization header).
+
+### Request Headers
+
+- `Authorization: Bearer <JWT_TOKEN>` (if not using cookies)
+
+### Responses
+
+#### Success
+
+- **Status Code:** `200 OK`
+- **Body**
+  ```json
+  {
+    "captain": {
+      "_id": "...",
+      "fullName": {
+        "firstName": "Jane",
+        "lastName": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### Authentication Error
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Authentication required"
+  }
+  ```
+
+### Example Request
+
+```sh
+curl -X GET http://localhost:3000/captain/profile \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+---
+
+## Captain Logout
+
+### Endpoint
+
+`GET /captain/logout`
+
+### Description
+
+Logs out the authenticated captain by blacklisting the JWT token and clearing the authentication cookie.
+
+### Request Headers
+
+- `Authorization: Bearer <JWT_TOKEN>` (if not using cookies)
+
+### Responses
+
+#### Success
+
+- **Status Code:** `200 OK`
+- **Body**
+  ```json
+  {
+    "message": "Logout Successfully"
+  }
+  ```
+
+#### Authentication Error
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Authentication required"
+  }
+  ```
+
+### Example Request
+
+```sh
+curl -X GET http://localhost:3000/captain/logout \
+  -H "Authorization: Bearer <JWT_TOKEN>"
 ```
