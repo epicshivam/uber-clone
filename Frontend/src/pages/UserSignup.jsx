@@ -87,7 +87,7 @@ const UserSignup = () => {
             value={password}
             onChange={(e)=>{setPassword(e.target.value)}}
         />
-        <button className='bg-[#111] text-white font-semibold mb-7 rounded px-4 py-2 w-full text-lg placeholder:text-base'>Login</button>
+        <button className='bg-[#111] text-white font-semibold mb-7 rounded px-4 py-2 w-full text-lg placeholder:text-base'>Create Account</button>
         
         <p className='text-center'>Already have an account ? <Link to='/login' className='mb-3 text-blue-600'>Login here</Link></p>
       </form>
