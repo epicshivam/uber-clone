@@ -4,7 +4,7 @@ const ConfirmedRide = (props) => {
   return (
     <div>
       <h5 onClick={()=>{
-          props.setVehiclePannel(false)
+          props.setConfirmedRidePanel(false)
         }} className='flex flex-row-reverse relative -top-3 font-bold'><i className="ri-arrow-down-wide-line text-xl text-gray-900"></i></h5>
         <h3 className='text-2xl font-semibold mb-5'>Confirm your Ride</h3>
         <div className='flex gap-2 justify-between items-center flex-col'>
