@@ -142,7 +142,7 @@ const CaptainSingup = () => {
         </div>
         <button className='bg-[#111] text-white font-semibold mb-10 rounded px-4 py-2 w-full text-lg placeholder:text-base'>Create Captain Account</button>
         
-        <p className='text-center'>Already have an account ? <Link to='/captain-login' className='mb-3 text-blue-600'>Login here</Link></p>
+        <p className='text-center mt-6'>Already have an account ? <Link to='/captain-login' className='mb-3 text-blue-600'>Login here</Link></p>
       </form>
         </div>
         <div>
