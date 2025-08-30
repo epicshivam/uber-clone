@@ -6,14 +6,16 @@ const {query} = require('express-validator');
 const { getCoordinates } = require('../controllers/map.controller');
 
 
-router.get(
-  '/get-coordinates',
+// router.get('/get-coordinates',authMiddleware.authUser,
+//   [query('address').notEmpty().withMessage('Address is required'),],mapController.getCoordinates);
+
+
+router.get('/get-distance-time', 
+  query('origin').isString().isLength({min : 3}),
+  query('destination').isString().isLength({min:3}),
   authMiddleware.authUser,
-  [
-    query('address').notEmpty().withMessage('Address is required'),
-  ],
-  mapController.getCoordinates
-);
+  mapController.getDistanceTime
+)
 
 
 module.exports = router; 

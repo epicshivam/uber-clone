@@ -1,23 +1,27 @@
 const axios = require("axios");
 
-module.exports.getAddressCoordinates = async (address) => {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+// Address -> Coordinates
+async function getCoordinates(address) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  const response = await axios.get(url);
+  if (response.data.length === 0) return null;
 
-    try {
-        const response = await axios.get(url);
+  return {
+    lat: response.data[0].lat,
+    lon: response.data[0].lon,
+  };
+}
 
-        if (response.data.length > 0) {
-            const location = response.data[0];
-            return {
-                lat: location.lat,
-                lng: location.lon,
-                display_name: location.display_name
-            };
-        } else {
-            throw new Error(`No results found for address: ${address}`);
-        }
-    } catch (error) {
-        console.error("Error fetching coordinates:", error.message);
-        throw error;
-    }
-};
+// Distance & Time
+async function getDistanceTime(originCoords, destCoords) {
+  const url = `http://router.project-osrm.org/route/v1/driving/${originCoords.lon},${originCoords.lat};${destCoords.lon},${destCoords.lat}?overview=false`;
+  const response = await axios.get(url);
+
+  const data = response.data.routes[0];
+  return {
+    distance_km: (data.distance / 1000).toFixed(2),
+    duration_min: (data.duration / 60).toFixed(2),
+  };
+}
+
+module.exports = { getCoordinates, getDistanceTime };
