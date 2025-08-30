@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {useGSAP} from '@gsap/react';
 import {gsap} from 'gsap';
 import 'remixicon/fonts/remixicon.css'
+import axios from 'axios'
 import LocationSearchPannel from '../components/LocationSearchPannel';
 import VehiclePanelComponent from '../components/VehiclePanelComponent';
 import ConfirmedRide from '../components/ConfirmedRide';
@@ -12,6 +13,12 @@ const Home = () => {
 
   const [pickUp, setPickUp] = useState('');
   const [destination, setDestination] = useState('');
+
+  const [pickUpSuggestions, setPickUpSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+
+  const [activeInput, setActiveInput] = useState('');
+
   const [panelOpen, setPanelOpen] = useState(false);
   const ConfirmedRidePanelRef = useRef(null);
   const pannelRef = useRef(null);
@@ -27,6 +34,49 @@ const Home = () => {
   const [waitingForDriver, setWaitingForDriver] = useState(false);
 
 
+  const fetchSuggestions = async (input) => {
+    if(input.length < 3) {
+      return;
+    }
+
+    try {
+      
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/maps/get-suggestions?input=${input}`, {
+      headers : {
+        'Authorization' : 'Bearer ' + localStorage.getItem('token')
+      }
+    });
+
+      const data = response.data;
+      console.log(data);
+      return data;
+
+    } catch (error) {
+      
+      console.log(error);
+
+    }
+  }
+
+
+  useEffect(()=>{
+    const timer = setTimeout(async ()=>{
+      const suggestions = await fetchSuggestions(pickUp);
+      setPickUpSuggestions(suggestions || []);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [pickUp]);
+
+
+    useEffect(()=>{
+    const timer = setTimeout(async ()=>{
+      const suggestions = await fetchSuggestions(destination);
+      setDestinationSuggestions(suggestions || []);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [destination]);
 
 
   const submitHandler = (e) => {
@@ -123,6 +173,7 @@ const Home = () => {
           <input
           onClick={()=>{
             setPanelOpen(true);
+            setActiveInput('pickup');
           }} 
           value={pickUp}
           onChange={(e)=>{
@@ -135,6 +186,7 @@ const Home = () => {
           <input
           onClick={()=>{
             setPanelOpen(true);
+            setActiveInput('destination')
           }} 
           value={destination}
           onChange={(e)=>{
@@ -146,8 +198,14 @@ const Home = () => {
         </form>
         </div>
         <div ref={pannelRef} className='opacity-0 h-[0%] bg-white'>
-          <LocationSearchPannel setVehiclePannel={setVehiclePannel}
-          setPanelOpen={setPanelOpen}/>
+          {/* <LocationSearchPannel type="pickup" setVehiclePannel={setVehiclePannel}
+          setPanelOpen={setPanelOpen} suggestions={pickUpSuggestions} setValue={setPickUp}/> */}
+
+          <LocationSearchPannel value={activeInput === 'pickup' ? pickUp : destination}
+            setValue={activeInput === 'pickup' ? setPickUp : setDestination}
+            suggestions={activeInput === 'pickup' ? pickUpSuggestions : destinationSuggestions}
+            setPanelOpen={setPanelOpen} setVehiclePannel={setVehiclePannel}
+          />
         </div>
       </div>
 
