@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {useGSAP} from '@gsap/react';
 import {gsap} from 'gsap';
 import 'remixicon/fonts/remixicon.css'
@@ -8,6 +8,8 @@ import VehiclePanelComponent from '../components/VehiclePanelComponent';
 import ConfirmedRide from '../components/ConfirmedRide';
 import LookingForDriver from '../components/LookingForDriver';
 import WaitingForDriver from '../components/WaitingForDriver';
+import { SocketContext } from '../context/SocketContext';
+import { UserDataContext } from '../context/userContext';
 
 const Home = () => {
 
@@ -36,6 +38,13 @@ const Home = () => {
   const [vehicleFound, setVehicleFound] = useState(false);
 
   const [waitingForDriver, setWaitingForDriver] = useState(false);
+
+  const {socket} = useContext(SocketContext);
+  const {user} = useContext(UserDataContext);
+
+ useEffect(() => {
+        socket.emit("join", { userType: "user", userId: user._id })
+    }, [ user ])
 
 
   const fetchSuggestions = async (input) => {
