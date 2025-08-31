@@ -11,6 +11,7 @@ const VehiclePanelComponent = (props) => {
         </div>
         <div onClick={()=>{
           props.setConfirmedRidePanel(true);
+          props.selectVehicle('car');
         }} className='flex border-2 border-transparent active:border-black rounded-xl mb-2 w-full items-center justify-between p-3'>
           <img className='h-12' src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1743773253/assets/5e/8ce23d-35fa-425d-a7d2-08a2826d04bc/original/UberBlackXL.png" alt="" />
           <div className='ml-2 w-1/2'>
@@ -23,6 +24,7 @@ const VehiclePanelComponent = (props) => {
 
         <div onClick={()=>{
           props.setConfirmedRidePanel(true);
+          props.selectVehicle('motorcycle');
         }} className='flex border-2 border-transparent active:border-black rounded-xl mb-2 w-full items-center justify-between p-3'>
           <img className='h-12' src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1649231091/assets/2c/7fa194-c954-49b2-9c6d-a3b8601370f5/original/Uber_Moto_Orange_312x208_pixels_Mobile.png" alt="" />
           <div className='ml-2 w-1/2'>
@@ -35,6 +37,7 @@ const VehiclePanelComponent = (props) => {
 
          <div onClick={()=>{
           props.setConfirmedRidePanel(true);
+          props.selectVehicle('auto');
         }} className='flex border-2 border-transparent active:border-black rounded-xl mb-2 w-full items-center justify-between p-3'>
           <img className='h-12' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsFabRnJZ8deGXJSKA1QjN45920WytRrdFsA&s" alt="" />
           <div className='ml-2 w-1/2'>

@@ -13,21 +13,21 @@ const ConfirmedRide = (props) => {
                 <div className='flex items-center gap-5 p-3 border-b-1'>
                     <i className="ri-map-pin-user-fill"></i>
                     <div>
-                        <h3 className='text-lg font-medium'>562/11-A</h3>
-                        <p className='text-sm -mt-1 text-gray-600'>Kankariya Tablab, TimbakTu</p>
+                        <h3 className='text-lg font-medium'>{props.pickUp}</h3>
+                        {/* <p className='text-sm -mt-1 text-gray-600'>{props.pickUp}</p> */}
                     </div>
                 </div>
                 <div className='flex items-center gap-5 p-3 border-b-1'>
                     <i className="ri-map-pin-2-fill text-lg"></i>
                     <div>
-                        <h3 className='text-lg font-medium'>562/11-A</h3>
-                        <p className='text-sm -mt-1 text-gray-600'>Kankariya Tablab, TimbakTu</p>
+                        <h3 className='text-lg font-medium'>{props.destination}</h3>
+                        {/* <p className='text-sm -mt-1 text-gray-600'>{props.destination}</p> */}
                     </div>
                 </div>
                 <div className='flex items-center gap-5 p-3'>
                     <i className="ri-money-rupee-circle-fill"></i>
                     <div>
-                        <h3 className='text-lg font-medium'>193.20</h3>
+                        <h3 className='text-lg font-medium'>₹{props.farePrice?.[props.selectVehicle]}</h3>
                         <p className='text-sm -mt-1 text-gray-600'>Cash Cash</p>
                     </div>
                 </div>
@@ -35,6 +35,7 @@ const ConfirmedRide = (props) => {
             <button onClick={()=>{
                 props.setVehicleFound(true)
                 props.setConfirmedRidePanel(false)
+                props.fetchCreateRide(props.selectVehicle)
             }} className='w-full mt-5 bg-green-500 text-white font-semibold p-2 rounded-lg'>Confirm</button>
         </div>
     </div>
