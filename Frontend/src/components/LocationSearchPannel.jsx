@@ -11,8 +11,8 @@ const LocationSearchPannel = (props) => {
             props.suggestions.map((elem,index) => (
                 <div onClick={()=>{
                     props.setValue(elem.name || elem)
-                    props.setVehiclePannel(true)
-                    props.setPanelOpen(false)
+                    // props.setVehiclePannel(true)
+                    // props.setPanelOpen(false)
                 }} key={index} className='flex  gap-4 border-2 p-3 rounded-xl border-gray-100 active:border-black items-center my-2 justify-start'>
         <h2 className='bg-[#eee] h-8 flex items-center justify-center w-12 rounded-full'><i className="ri-map-pin-2-fill"></i></h2>
         <h4 className='font-medium'>{elem.name || elem}</h4>

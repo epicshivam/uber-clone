@@ -17,6 +17,8 @@ const Home = () => {
   const [pickUpSuggestions, setPickUpSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
+  const [farePrice, setFarePrice] = useState(null);
+
   const [activeInput, setActiveInput] = useState('');
 
   const [panelOpen, setPanelOpen] = useState(false);
@@ -48,13 +50,34 @@ const Home = () => {
     });
 
       const data = response.data;
-      console.log(data);
       return data;
 
     } catch (error) {
       
       console.log(error);
 
+    }
+  }
+
+  const fetchFare = async (pickUp,destination) => {
+    try {
+      
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/get-fare`, 
+      {
+        pickup : pickUp,
+        destination
+      },
+      {
+        headers : {
+          "Authorization" : "Bearer " + localStorage.getItem('token')
+        }
+      });
+
+      setFarePrice(response.data);
+      console.log(response.data);
+
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -151,6 +174,12 @@ const Home = () => {
     }
   }, [waitingForDriver])
 
+
+  function findTrip() {
+    setVehiclePannel(true)
+    setPanelOpen(false)
+  }
+
   return (
     <div className='h-screen position-relative overflow-hidden'>
       <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
@@ -159,7 +188,7 @@ const Home = () => {
         <img className='h-full w-full object-cover' src="https://www.medianama.com/wp-content/uploads/2018/06/Screenshot_20180619-112715.png.png" alt="" />
       </div>
       <div className='flex flex-col justify-end h-screen top-0 absolute w-full'>
-        <div className='h-[30%] p-5 bg-white relative'>
+        <div className='h-[30%] p-5 bg-white relative mb-6'>
           <h5 ref={pannelCloseRef} onClick={()=>{
             setPanelOpen(false);
           }} className='absolute opacity-0 right-6 top-6 text-2xl'>
@@ -191,15 +220,19 @@ const Home = () => {
           value={destination}
           onChange={(e)=>{
             setDestination(e.target.value);
-          }} 
-          className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3' type="text" 
-          placeholder='Enter your destination'
-          />
-        </form>
-        </div>
-        <div ref={pannelRef} className='opacity-0 h-[0%] bg-white'>
-          {/* <LocationSearchPannel type="pickup" setVehiclePannel={setVehiclePannel}
-          setPanelOpen={setPanelOpen} suggestions={pickUpSuggestions} setValue={setPickUp}/> */}
+            }} 
+            className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3' type="text" 
+            placeholder='Enter your destination'
+            />
+          </form>
+          <button onClick={()=>{
+            findTrip();
+            fetchFare(pickUp,destination);
+          }} className="bg-black text-white px-4 py-2 rounded mt-4 w-full">Find Trip</button>
+          </div>
+          <div ref={pannelRef} className='opacity-0 h-[0%] bg-white'>
+            {/* <LocationSearchPannel type="pickup" setVehiclePannel={setVehiclePannel}
+            setPanelOpen={setPanelOpen} suggestions={pickUpSuggestions} setValue={setPickUp}/> */}
 
           <LocationSearchPannel value={activeInput === 'pickup' ? pickUp : destination}
             setValue={activeInput === 'pickup' ? setPickUp : setDestination}
@@ -212,7 +245,9 @@ const Home = () => {
       <div ref={vehiclePannelRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-6 translate-y-full'>
         <VehiclePanelComponent 
         setConfirmedRidePanel={setConfirmedRidePanel}
-        setVehiclePannel={setVehiclePannel}/>
+        setVehiclePannel={setVehiclePannel}
+        farePrice={farePrice}
+        />
       </div>
 
       <div ref={ConfirmedRidePanelRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-6 translate-y-full'>
