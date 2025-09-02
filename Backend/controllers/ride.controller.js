@@ -3,6 +3,8 @@ const { validationResult } = require('express-validator');
 
 const mapService = require("../services/maps.service")
 
+const {sendMessageToSocketId} = require("../socket")
+
 
 module.exports.createRide = async (req, res) => {
     const errors = validationResult(req);
@@ -28,7 +30,7 @@ module.exports.createRide = async (req, res) => {
             15,
         );
 
-        console.log("Nearby captains:", captainsInRadius);
+         console.log("Nearby captains:", captainsInRadius);
 
         // 3. Create ride
         const ride = await rideService.createRide({
@@ -37,6 +39,17 @@ module.exports.createRide = async (req, res) => {
             destination,
             vehicleType
         });
+
+        ride.otp = ""
+
+
+        captainsInRadius.map(async captain => {
+            sendMessageToSocketId(captain.socketId, {
+                event: 'new-ride',
+                data: ride
+            })
+        })
+        
 
         // 4. Send response with ride + captains
         return res.status(201).json({ ride, nearbyCaptains: captainsInRadius });

@@ -49,6 +49,11 @@ useEffect(() => {
 }, [socket, captain._id]);
 
 
+  socket.on('new-ride', (data)=>{
+    console.log(data);
+  })
+
+
   useGSAP(function(){
     if(ridePopupPanel){
       gsap.to(ridePopupPanelRef.current,{
