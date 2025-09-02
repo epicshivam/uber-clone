@@ -1,4 +1,5 @@
 const axios = require("axios");
+const captainModel = require("../models/captain.model")
 
 // Address -> Coordinates
 async function getCoordinates(address) {
@@ -52,4 +53,33 @@ if(!input) {
 
 }
 
-module.exports = { getCoordinates, getDistanceTime, getAutoCompleteSuggestions };
+async function getCaptainsInTheRadius(lat, lon, radiusInKm) {
+  const latitude = parseFloat(lat);
+  const longitude = parseFloat(lon);
+
+  if (isNaN(latitude) || isNaN(longitude)) {
+    console.log("Invalid lat/lon:", lat, lon);
+    return [];
+  }
+
+  const earthRadiusInKm = 6378.1; 
+  const radiusInRadians = radiusInKm / earthRadiusInKm;
+
+  const captains = await captainModel.find({
+    location: {
+      $geoWithin: {
+        $centerSphere: [[longitude, latitude], radiusInRadians]
+      }
+    }
+  });
+
+  console.log("Query center:", [longitude, latitude], "Radius:", radiusInRadians);
+  console.log("Found captains:", captains);
+  return captains;
+}
+
+
+
+
+
+module.exports = { getCoordinates, getDistanceTime, getAutoCompleteSuggestions, getCaptainsInTheRadius };
