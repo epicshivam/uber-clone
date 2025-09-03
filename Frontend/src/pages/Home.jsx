@@ -10,6 +10,8 @@ import LookingForDriver from '../components/LookingForDriver';
 import WaitingForDriver from '../components/WaitingForDriver';
 import { SocketContext } from '../context/SocketContext';
 import { UserDataContext } from '../context/userContext';
+import { useNavigate } from 'react-router-dom';
+import LiveTracking from '../components/LiveTracking';
 
 const Home = () => {
 
@@ -38,14 +40,18 @@ const Home = () => {
   const [vehicleFound, setVehicleFound] = useState(false);
   const [ride,setRide] = useState(null);
 
+  const navigate = useNavigate();
+
   const [waitingForDriver, setWaitingForDriver] = useState(false);
 
   const {socket} = useContext(SocketContext);
   const {user} = useContext(UserDataContext);
 
  useEffect(() => {
-        socket.emit("join", { userType: "user", userId: user._id })
-    }, [ user ])
+    if (user && user._id) {
+        socket.emit("join", { userType: "user", userId: user._id });
+    }
+}, [user]);
   
   
   socket.on('ride-confirmed', ride => {
@@ -53,6 +59,12 @@ const Home = () => {
     setWaitingForDriver(true)
     setRide(ride)
   })
+
+  socket.on('ride-started', ride => {
+        console.log("ride")
+        setWaitingForDriver(false)
+        navigate('/riding', { state: { ride } })
+    })
 
 
   const fetchSuggestions = async (input) => {
@@ -223,8 +235,11 @@ const Home = () => {
     <div className='h-screen position-relative overflow-hidden'>
       <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
 
-      <div className='h-screen w-screen'>
-        <img className='h-full w-full object-cover' src="https://www.medianama.com/wp-content/uploads/2018/06/Screenshot_20180619-112715.png.png" alt="" />
+      <div className='h-screen w-screen relative'>
+        {/* <img className='h-full w-full object-cover' src="https://www.medianama.com/wp-content/uploads/2018/06/Screenshot_20180619-112715.png.png" alt="" /> */}
+        <div className="absolute inset-0 z-0">
+          <LiveTracking role="user"  />
+        </div>
       </div>
       <div className='flex flex-col justify-end h-screen top-0 absolute w-full'>
         <div className='h-[30%] p-5 bg-white relative mb-6'>

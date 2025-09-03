@@ -12,6 +12,7 @@ const WaitingForDriver = (props) => {
                 <h2 className='text-lg font-medium'>{props.ride?.captain.fullName.firstName}</h2>
                 <h4 className='text-xl font-semibold -mt-1 -mb-1'>{props.ride?.captain.vehicle.plate}</h4>
                 <p className='text-sm text-gray-600'>BMW M5</p>
+                <h1 className='text-lg font-semibold'>{props.ride?.otp}</h1>
             </div>
         </div>
         <div className='flex gap-2 justify-between items-center flex-col'>
