@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import axios from "axios"
 import CaptainDetails from "../components/CaptainDetails"
 import RidePopUp from "../components/RidePopUp"
 import { useRef, useState } from "react"
@@ -11,7 +12,7 @@ import { CaptainDataContext } from "../context/CaptainContext"
 
 const CaptainHome = () => {
 
-  const [ridePopupPanel, setRidePopupPanel] = useState(true);
+  const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
 
 
@@ -20,6 +21,8 @@ const CaptainHome = () => {
 
   const {socket} = useContext(SocketContext)
   const {captain} = useContext(CaptainDataContext)
+
+  const [ride,setRide] = useState(null);
 
 
 useEffect(() => {
@@ -51,8 +54,28 @@ useEffect(() => {
 
   socket.on('new-ride', (data)=>{
     console.log(data);
+    setRide(data)
+    setRidePopupPanel(true)
   })
 
+  async function confirmRide() {
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {
+
+            rideId: ride._id,
+            captainId: captain._id,
+
+
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        setRidePopupPanel(false)
+        setConfirmRidePopupPanel(true)
+
+    }
 
   useGSAP(function(){
     if(ridePopupPanel){
@@ -93,8 +116,12 @@ useEffect(() => {
         <CaptainDetails/>
       </div>
       <div ref={ridePopupPanelRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-6 translate-y-full'>
-        <RidePopUp setRidePopupPanel={setRidePopupPanel}
-        setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
+        <RidePopUp 
+        ride={ride}
+        setRidePopupPanel={setRidePopupPanel}
+        setConfirmRidePopupPanel={setConfirmRidePopupPanel} 
+        confirmRide = {confirmRide}
+        />
       </div>
 
       <div ref={confirmRidePopupPanelRef} className='fixed w-full h-screen z-10 bottom-0 bg-white px-3 py-6 translate-y-full'>

@@ -18,5 +18,11 @@ router.post('/get-fare',
     body('destination').isString().isLength({min:3}).withMessage('Invalid destination address'),  
     rideController.getFare);
 
+router.post('/confirm',
+    authMiddleware.authCaptain,
+    body('rideId').isMongoId().withMessage('Invalid ride id'),
+    rideController.confirmRide
+)
+
 
 module.exports = router;

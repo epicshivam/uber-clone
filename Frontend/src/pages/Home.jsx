@@ -36,6 +36,7 @@ const Home = () => {
   const vehiclePannelRef = useRef(null);
   const [ConfirmedRidePanel, setConfirmedRidePanel] = useState(false);
   const [vehicleFound, setVehicleFound] = useState(false);
+  const [ride,setRide] = useState(null);
 
   const [waitingForDriver, setWaitingForDriver] = useState(false);
 
@@ -45,6 +46,13 @@ const Home = () => {
  useEffect(() => {
         socket.emit("join", { userType: "user", userId: user._id })
     }, [ user ])
+  
+  
+  socket.on('ride-confirmed', ride => {
+    setVehicleFound(false)
+    setWaitingForDriver(true)
+    setRide(ride)
+  })
 
 
   const fetchSuggestions = async (input) => {
@@ -303,7 +311,11 @@ const Home = () => {
       </div>
 
       <div ref={waitingForDriverRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-6'>
-        <WaitingForDriver setWaitingForDriver={setWaitingForDriver}/>
+        <WaitingForDriver 
+        ride={ride}
+        setVehicleFound={setVehicleFound}
+        setWaitingForDriver={setWaitingForDriver}
+        waitingForDriver={waitingForDriver}/>
       </div>
     </div>
   )

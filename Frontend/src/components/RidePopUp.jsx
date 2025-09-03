@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios';
 
 const RidePopUp = (props) => {
   return (
@@ -10,7 +11,7 @@ const RidePopUp = (props) => {
         <div className='flex items-center justify-between p-3 bg-yellow-400 rounded-lg mt-4'>
             <div className='flex items-center gap-3'>
                 <img className='h-12 w-12 rounded-full object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlMd7stpWUCmjpfRjUsQ72xSWikidbgaI1w&s" alt="" />
-                <h2 className='text-lg font-medium'>Harsh Patel</h2>
+                <h2 className='text-lg font-medium'>{props.ride?.user.fullName.firstName + " " + props.ride?.user.fullName.lastName}</h2>
             </div>
             <h5 className='text-lg font-semibold'>2.2 KM</h5>
         </div>
@@ -21,20 +22,20 @@ const RidePopUp = (props) => {
                     <i className="ri-map-pin-user-fill"></i>
                     <div>
                         <h3 className='text-lg font-medium'>562/11-A</h3>
-                        <p className='text-sm -mt-1 text-gray-600'>Kankariya Tablab, TimbakTu</p>
+                        <p className='text-sm -mt-1 text-gray-600'>{props.ride?.pickup}</p>
                     </div>
                 </div>
                 <div className='flex items-center gap-5 p-3 border-b-1'>
                     <i className="ri-map-pin-2-fill text-lg"></i>
                     <div>
                         <h3 className='text-lg font-medium'>562/11-A</h3>
-                        <p className='text-sm -mt-1 text-gray-600'>Kankariya Tablab, TimbakTu</p>
+                        <p className='text-sm -mt-1 text-gray-600'>{props.ride?.destination}</p>
                     </div>
                 </div>
                 <div className='flex items-center gap-5 p-3'>
                     <i className="ri-money-rupee-circle-fill"></i>
                     <div>
-                        <h3 className='text-lg font-medium'>193.20</h3>
+                        <h3 className='text-lg font-medium'>{props.ride?.fare}</h3>
                         <p className='text-sm -mt-1 text-gray-600'>Cash Cash</p>
                     </div>
                 </div>
@@ -43,6 +44,7 @@ const RidePopUp = (props) => {
 
                 <button onClick={()=>{
                props.setConfirmRidePopupPanel(true); 
+               props.confirmRide();
             }} className=' mb-4 bg-green-500 text-white font-semibold p-3 px-10 rounded-lg'>Accept</button>
 
                 <button onClick={()=>{
